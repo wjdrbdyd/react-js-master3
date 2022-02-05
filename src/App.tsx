@@ -1,7 +1,7 @@
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./atoms";
+import { IToDo, toDoState } from "./atoms";
 import Board from "./Components/Board";
 
 const Wrapper = styled.div`
@@ -29,10 +29,15 @@ function App() {
       // same board movement
       setToDos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]];
+        const taskObj = boardCopy[source.index];
+        // const moveCard: any = boardCopy.find((toDo) => {
+        //   return toDo.id === Number(draggableId);
+        // });
         // 1) Delete Item on source.index
         boardCopy.splice(source.index, 1);
         // 2) Put back the item on the destination.index
-        boardCopy.splice(destination.index, 0, draggableId);
+        boardCopy.splice(destination.index, 0, taskObj);
+
         console.log(boardCopy);
         return { ...allBoards, [source.droppableId]: boardCopy };
       });
@@ -43,8 +48,15 @@ function App() {
         // 1. source의 droppableId에 해당하는 index를 지운다.
         const sourceBoard = [...allBoards[source.droppableId]];
         const destinationBoard = [...allBoards[destination.droppableId]];
+        // 인덱스로 선택한 card 정보 가져오기
+        const taskObj = sourceBoard[source.index];
+        // 아이디로 선택한 card 정보 가져오기
+        /* const moveCard: any = sourceBoard.find((toDo) => {
+          return toDo.id === Number(draggableId);
+        }); */
         sourceBoard.splice(source.index, 1);
-        destinationBoard.splice(destination.index, 0, draggableId);
+
+        destinationBoard.splice(destination.index, 0, taskObj);
         // 2. destination droppableId에 index에 붙여넣는다
         return {
           ...allBoards,
